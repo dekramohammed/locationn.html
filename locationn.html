@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>تحديد الموقع الجغرافي</title>
+  <script>
+    // دالة للحصول على الموقع الجغرافي باستخدام HTML5 Geolocation API
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(submitLocation, showError);
+      } else {
+        alert("إمكانية تحديد الموقع غير مدعومة في هذا المتصفح.");
+      }
+    }
+
+    // دالة لإرسال الموقع الجغرافي إلى نموذج Google Form
+    function submitLocation(position) {
+      var lat = position.coords.latitude;  // خط العرض
+      var lng = position.coords.longitude; // خط الطول
+      document.getElementById("latitude").value = lat;  // تعبئة حقل خط العرض
+      document.getElementById("longitude").value = lng;  // تعبئة حقل خط الطول
+      document.getElementById("locationForm").submit(); // إرسال النموذج إلى Google Form
+    }
+
+    // دالة لعرض الأخطاء في حال فشل تحديد الموقع
+    function showError(error) {
+      switch(error.code) {
+        case error.PERMISSION_DENIED:
+          alert("تم رفض الوصول إلى الموقع.");
+          break;
+        case error.POSITION_UNAVAILABLE:
+          alert("تعذر الحصول على الموقع.");
+          break;
+        case error.TIMEOUT:
+          alert("انتهت مدة البحث عن الموقع.");
+          break;
+        case error.UNKNOWN_ERROR:
+          alert("حدث خطأ غير معروف.");
+          break;
+      }
+    }
+  </script>
+  <style>
+    /* إخفاء الحقول المخفية من النموذج */
+    #latitude, #longitude {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>حدد موقعك الجغرافي لتسجيل الحضور</h1>
+  <button onclick="getLocation()">حدد الموقع</button>
+
+  <!-- نموذج Google Form مدمج في الصفحة -->
+  <form id="locationForm" action="https://docs.google.com/forms/d/e/1FAIpQLScxciKFydYeEI10MuN3aXGhsJ-645WZvF6sTGJ74xXoLb8plA/viewform?usp=sf_link" method="POST">
+    <input type="hidden" name="entry.1234567890" id="latitude" /> <!-- حقل خط العرض مخفي -->
+    <input type="hidden" name="entry.0987654321" id="longitude" /> <!-- حقل خط الطول مخفي -->
+  </form>
+</body>
+</html>
